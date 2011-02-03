@@ -1,4 +1,4 @@
-module HTMLDiff
+class HTMLDiff
 
   Match = Struct.new(:start_in_old, :start_in_new, :size)
   class Match
@@ -308,6 +308,10 @@ module HTMLDiff
     end
 
   end # of class Diff Builder
+
+  def HTMLDiff.diff(a, b)
+    HTMLDiff.new.diff(a, b)
+  end
   
   def diff(a, b)
     DiffBuilder.new(a, b).build
