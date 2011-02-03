@@ -15,9 +15,10 @@ class HTMLDiff
 
   class DiffBuilder
 
-    def initialize(old_version, new_version)
+    def initialize(old_version, new_version, mode = :html)
       @old_version, @new_version = old_version, new_version
       @content = []
+      @mode = mode
     end
 
     def build
@@ -174,11 +175,23 @@ class HTMLDiff
     end
     
     def insert(operation, tagclass = 'diffins')
-      insert_tag('ins', tagclass, @new_words[operation.start_in_new...operation.end_in_new])
+      if @mode == :html
+        insert_tag('ins', tagclass, @new_words[operation.start_in_new...operation.end_in_new])
+      else
+        @content << '[++'
+        @content << @new_words[operation.start_in_new...operation.end_in_new]
+        @content << '++]'
+      end
     end
     
     def delete(operation, tagclass = 'diffdel')
-       insert_tag('del', tagclass, @old_words[operation.start_in_old...operation.end_in_old])
+      if @mode == :html
+        insert_tag('del', tagclass, @old_words[operation.start_in_old...operation.end_in_old])
+      else
+        @content << '[--'
+        @content << @old_words[operation.start_in_old...operation.end_in_old]
+        @content << '--]'
+      end
     end
     
     def equal(operation)
@@ -312,9 +325,17 @@ class HTMLDiff
   def HTMLDiff.diff(a, b)
     HTMLDiff.new.diff(a, b)
   end
+
+  def HTMLDiff.textdiff(a, b)
+    HTMLDiff.new.textdiff(a, b)
+  end
   
   def diff(a, b)
     DiffBuilder.new(a, b).build
+  end
+
+  def textdiff(a, b)
+    DiffBuilder.new(a, b, :text).build
   end
 
 end

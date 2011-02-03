@@ -24,5 +24,10 @@ describe "htmldiff" do
     diff = HTMLDiff.diff('a b c', 'a d c')
     diff.should == "a <del class=\"diffmod\">b</del><ins class=\"diffmod\">d</ins> c"
   end
+
+  it "should provide a text output format" do
+    diff = HTMLDiff.textdiff('a b c', 'a d c')
+    diff.should == "a [--b--][++d++] c"
+  end
   
 end
